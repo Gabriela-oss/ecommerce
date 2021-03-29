@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
-
-  resources :products
-  resources :categories
+  devise_for :users
   devise_for :admins
-  root to: 'home#index'
+  #root to: 'home#index'
+  authenticate :admin do 
+    resources :products
+    resources :categories
+  end 
 end
