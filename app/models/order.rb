@@ -1,9 +1,18 @@
 class Order < ApplicationRecord
   belongs_to :user
-
+  has_many :order_items
+  has_many :products, through: :order_items
+  
   before_create:generate_number
 
   validates :number, uniqueness: true 
+  
+  def add_product(product_id, quantity)
+    product = Product.find(product_id)
+    if product.present? && product.stock > 0 && product.stock >= quantity
+      order_items.create(product: product, quantity: quantity, price: product.price)
+    end
+  end
 
   def generate_number
     self.number ||= loop do 
@@ -23,4 +32,5 @@ class Order < ApplicationRecord
   def hash_size
     9
   end
+
 end
