@@ -1,16 +1,19 @@
 class Order < ApplicationRecord
   belongs_to :user
+  
   has_many :order_items
   has_many :products, through: :order_items
   
-  before_create:generate_number
+  before_create:generate_number #nos permite generar el metodo number
 
-  validates :number, uniqueness: true 
+  validates :number, uniqueness: true #validamos q este numero sea unico no este validado o exista antes
   
-  def add_product(product_id, quantity)
+  def add_product(product_id, quantity) #este es un metodo de instancia q toma la orden del carrito de compra y le agrega un producto 
     product = Product.find(product_id)
     if product.present? && product.stock > 0 && product.stock >= quantity
       order_items.create(product: product, quantity: quantity, price: product.price)
+      self.total += product.price * quantity 
+      self.save
     end
   end
 

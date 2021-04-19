@@ -1,12 +1,15 @@
 class CartsController < ApplicationController
-  before_action :autheticate_user!
+  before_action :authenticate_user!
   def update
-    product = params[:card][:product_id]
-    quantity = params[:card][:quantity]
+    product = params[:cart][:product_id].to_i
+    quantity = params[:cart][:quantity].to_i
 
     current_order.add_product(product, quantity)
-    
-    redirect_to root_url, notice: 'Product added successfuly'
+
+    respond_to do |format| 
+      format.html {redirect_to root_url, notice: 'Product added successfuly'}
+      format.js 
+    end
   end
 
   def show
